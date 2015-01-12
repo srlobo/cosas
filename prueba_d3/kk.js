@@ -6,7 +6,10 @@ function init(){
 	var height = 500;
 
 	var tree = d3.layout.tree()
-		.nodeSize([100, 30]);
+		.nodeSize([100, 30])
+		.separation(function(a, b) {
+			return (a.parent == b.parent ? 1 : 1.1);
+		});
 
 	var diagonal = d3.svg.diagonal()
 		.source(function(d) {
