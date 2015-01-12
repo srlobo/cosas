@@ -3,7 +3,7 @@ function init(){
 	console.log(data_json.conditions);
 
 	var width = 1000;
-	var height = 1000;
+	var height = 500;
 
 	var tree = d3.layout.tree()
 		.nodeSize([100, 30]);
@@ -12,20 +12,35 @@ function init(){
 		.source(function(d) {
 			var x = d.source.x;
 			var y = d.source.y;
-			return {y: y + 10, x: x};
+			return {y: y + 15, x: x};
 		})
 		.target(function(d) {
 			var x = d.target.x;
 			var y = d.target.y;
-			return {y: y - 10, x: x};
+			return {y: y - 15, x: x};
 		})
 		.projection(function(d) { return [d.x, d.y]; });
+	//var diagonal = d3.svg.diagonal()
+	//	.projection(function(d) {
+	//		return [d.x + 90 / 2, d.y + 30 / 2];
+	//	});
+
+	//Redraw for zoom
+	function redraw() {
+		//console.log("here", d3.event.translate, d3.event.scale);
+		svg.attr("transform",
+				 "translate(" + d3.event.translate + ")"
+				 + " scale(" + d3.event.scale + ")");
+	}
 
 	var svg = d3.select("body").append("svg")
-		.attr("width", "1000")
-		.attr("height", "1000")
+		.attr("width", "700")
+		.attr("height", "400")
+		.call(zm = d3.behavior.zoom().scaleExtent([.1,3]).on("zoom", redraw))
 		.append("g")
-		.attr("transform", "translate(300, 30)");
+		.attr("transform", "translate(350, 30)");
+	zm.translate([350, 30]);
+
 
 	var root = cond2tree(data_json.conditions);
 	console.log(root);
@@ -33,8 +48,8 @@ function init(){
 	update(root);
 
 	function update(source){
-		var nodes = tree.nodes(source),
-			links = tree.links(nodes);
+		var nodes = tree.nodes(source).reverse();
+		var links = tree.links(nodes);
 
 		nodes.forEach(function(d) { d.y = d.depth * 50; });
 
@@ -235,4 +250,5 @@ function cond2tree(cond_list){
 		return node;
 	}
 }
+
 
