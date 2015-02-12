@@ -5,12 +5,17 @@ var types = [{
 {
 	height: 20,
 	width: 30
-}];
+},
+{
+	height: 13,
+	width: 18
+}
+];
 
 var diameter = 960;
 var width = diameter;
 var height = diameter;
-var number = 3;
+var number = 500;
 
 function init(){
 	var pack = d3.layout.pack()
@@ -24,7 +29,6 @@ function init(){
 		.attr("transform", "translate(2,2)");
 
 	var root = generate_sequence(types, number);
-	console.log(root);
 	var node = svg.datum(root).selectAll(".node")
 		.data(pack.nodes)
 		.enter().append("g")
@@ -41,11 +45,14 @@ function init(){
 function generate_sequence(types, number){
 	nodes = {id: 0, children: [], parent: null}
 	for(var i=1;i <= number;++i){
-		var el;
-		el = Math.floor(Math.random() * types.length);
-		el = types[el];
+		var el = {};
+		var ref = types[Math.floor(Math.random() * types.length)];
+		el["height"] = ref["height"]
+		el["width"] = ref["width"]
 		el["id"] = i;
 		el["parent"] = 0;
+		el["children"] = [];
+		//el["depth"] = 1;
 		el["size"] = Math.sqrt(Math.pow(el.height, 2) + Math.pow(el.width, 2));
 		nodes.children.push(el);
 	}
