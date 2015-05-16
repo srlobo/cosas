@@ -14,6 +14,18 @@ var types = [{
 },
 ];
 
+function create_from_chain(chain){
+	$("#container").empty();
+	_.each(chain.split("|"), function(value){
+		var x = value.split("x")[0];
+		var y = value.split("x")[1];
+		console.log(x);
+		console.log(y);
+		insert_item(x, y, false);
+	});
+	triggerChange();
+}
+
 function allowDrop(ev) {
 	ev.preventDefault();
 	//console.log("allowDrop");
@@ -46,16 +58,20 @@ function triggerChange(){
 		numbers["l" + value.height + "x" + value.width] = 0;
 	});
 
+	// Obtenemos también la cadena de identificación de la combinación
+	var chain = [];
 	_.each($("#container").children(), function(el){
 		var w = $(el).width() / conversion_factor;
 		var h = $(el).height() / conversion_factor;
 		numbers["l" + w + "x" + h]++;
+		chain.push("" + w + "x" + h);
 	});
+	$("#chain").val(chain.join("|"));
 
-	console.log(numbers);
 	_.each(numbers, function(value, key){
 		$("#" + key).text(value);
 	});
+
 }
 
 function drag(ev) {
@@ -112,6 +128,12 @@ function create_control(){
 	});
 	$("<p>Anchura: <span id='container_width'></span></p>").appendTo("#control");
 	$("<p>Altura: <span id='container_height'></span></p>").appendTo("#control");
+	$("<p>Cadena:</p> <textarea id='chain'></textarea>").appendTo("#control");
+	var b = $("<button>Cargar</button>");
+	b.click(function(){
+		create_from_chain($("#chain").val());
+	});
+	b.appendTo("#control");
 }
 
 $(document).ready(function(){
