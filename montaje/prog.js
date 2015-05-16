@@ -1,12 +1,12 @@
 var types = [{
 	height: 10,
 	width: 15,
-	number: 6
+	number: 7
 },
 {
 	height: 15,
 	width: 10,
-	number: 6
+	number: 7
 },
 {
 	height: 20,
@@ -21,20 +21,24 @@ var types = [{
 {
 	height: 13,
 	width: 18,
-	number: 6
+	number: 7
 },
 {
 	height: 18,
 	width: 13,
-	number: 6
+	number: 7
 }
 ];
+
+function allowDrop(ev) {
+	ev.preventDefault();
+}
 
 function generate_sequence(number){
 	var i = 0;
 	_.each(types, function(value){
 		for(j = 0;j < value.number;++j){
-			var el = $("<div id='cuadro_" + i + "' class='photo'>");
+			var el = $("<div id='cuadro_" + i + "' class='photo' draggable='true'>");
 			el.height(value.height * 10);
 			el.width(value.width * 10);
 			$("#container").append(el)
