@@ -32,13 +32,19 @@ var types = [{
 
 function allowDrop(ev) {
 	ev.preventDefault();
+	// mueve el div donde se ha soltado
+	//
+}
+
+function drag(ev) {
+	ev.dataTransfer.setData("text", ev.target.id);
 }
 
 function generate_sequence(number){
 	var i = 0;
 	_.each(types, function(value){
 		for(j = 0;j < value.number;++j){
-			var el = $("<div id='cuadro_" + i + "' class='photo' draggable='true'>");
+			var el = $("<div id='cuadro_" + i + "' class='photo' draggable='true' ondragstart='drag(event)'>");
 			el.height(value.height * 10);
 			el.width(value.width * 10);
 			$("#container").append(el)
@@ -53,10 +59,10 @@ function generate_sequence(number){
 
 $(document).ready(function(){
 	generate_sequence(20);
-	new Masonry(("#container"), {
-		"columnWidth": 10,
-		"gutter": 10,
-	})
+//	new Masonry(("#container"), {
+//		"columnWidth": 10,
+//		"gutter": 10,
+//	});
 });
 
 
