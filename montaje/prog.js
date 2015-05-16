@@ -1,15 +1,16 @@
 var i = 0;
+var conversion_factor = 10;
 var types = [{
 	width: 10,
 	height: 15,
 },
 {
-	width: 20,
-	height: 30,
-},
-{
 	width: 13,
 	height: 18,
+},
+{
+	width: 20,
+	height: 30,
 },
 ];
 
@@ -34,6 +35,27 @@ function triggerChange(){
 	var msnry = Masonry.data("#container");
 	msnry.reloadItems();
 	msnry.layout();
+
+	// Rellenamos datos
+	$("#container_height").text($("#container").height());
+	$("#container_width").text($("#container").width());
+
+	var numbers = {};
+	_.each(types, function(value){
+		numbers["l" + value.width + "x" + value.height] = 0;
+		numbers["l" + value.height + "x" + value.width] = 0;
+	});
+
+	_.each($("#container").children(), function(el){
+		var w = $(el).width() / conversion_factor;
+		var h = $(el).height() / conversion_factor;
+		numbers["l" + w + "x" + h]++;
+	});
+
+	console.log(numbers);
+	_.each(numbers, function(value, key){
+		$("#" + key).text(value);
+	});
 }
 
 function drag(ev) {
@@ -44,10 +66,13 @@ function drag(ev) {
 function insert_item(width, height, t){
 	var id = "cuadro_" + i;
 	var el = $("<div id='" + id + "' class='photo' draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'>");
-	el.height(height * 10);
-	el.width(width * 10);
-	$('<a href="#" onClick="transpose_item(' + id + ');">t</a><br/>').appendTo(el);
-	$('<a href="#" onClick="delete_item(' + id + ');">X</a><br/>').appendTo(el);
+	el.height(height * conversion_factor);
+	el.width(width * conversion_factor);
+	$('<a href="#" onClick="transpose_item(' + id + ');">t</a>').appendTo(el);
+	$('<a href="#" onClick="delete_item(' + id + ');">X</a>').appendTo(el);
+	$('<br/>').appendTo(el);
+	$('<br/>').appendTo(el);
+	$('<span class="grande">' + i + '</span>').appendTo(el);
 	$("#container").append(el)
 	++i;
 	if(t)
@@ -79,19 +104,24 @@ function create_control(){
 		$("#control").append($("<br/>"));
 	});
 	_.each(types, function(value){
-		var el = $("<p>Número " + value.width + "x" + value.height + " <span id='l" + value.width + "x" + value.height + "'></span></p>");
+		var el = $("<p>Número " + value.width + "x" + value.height + ": <span id='l" + value.width + "x" + value.height + "'></span></p>");
 		$("#control").append(el);
 
-		el = $("<p>Número " + value.height + "x" + value.width + " <span id='l" + value.height + "x" + value.width + "'></span></p>");
+		el = $("<p>Número " + value.height + "x" + value.width + ": <span id='l" + value.height + "x" + value.width + "'></span></p>");
 		$("#control").append(el);
 	});
+	$("<p>Anchura: <span id='container_width'></span></p>").appendTo("#control");
+	$("<p>Altura: <span id='container_height'></span></p>").appendTo("#control");
 }
 
 $(document).ready(function(){
 	create_control();
 	insert_item(10, 15, false);
 	new Masonry(("#container"), {
-		"columnWidth": 10,
-		"gutter": 10,
+		"columnWidth": 1 * conversion_factor,
+		"gutter": 1 * conversion_factor,
 	});
+	$("#container").css("position", "absolute");
+	$("#container").width(110 * conversion_factor);
+	$("#container").height(150 * conversion_factor);
 });
